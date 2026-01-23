@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Level Node - Wi-Fi Setup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4c51bf 0%, #434190 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .tips {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tips h3 {
+            color: #4a5568;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .tips ul {
+            list-style: none;
+        }
+
+        .tips li {
+            padding: 6px 0;
+            color: #718096;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .tips li:before {
+            content: "•";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        .device-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #a0aec0;
+        }
+
+        .chip-id {
+            background: #f7fafc;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>Water Level Node Setup</h1>
+                <div class="subtitle">Connect to Wi-Fi Network</div>
+                <div class="status-badge">Access Point Mode</div>
+            </div>
+
+            <div class="content">
+                <div id="errorMessage" class="message error"></div>
+                <div id="successMessage" class="message success"></div>
+
+                <form id="wifiForm">
+                    <div class="form-group">
+                        <label for="ssid">Wi-Fi Network (SSID)</label>
+                        <input type="text" id="ssid" name="ssid" class="form-control" 
+                               placeholder="Enter your Wi-Fi network name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Wi-Fi Password</label>
+                        <input type="password" id="password" name="password" class="form-control" 
+                               placeholder="Enter your Wi-Fi password">
+                        <small style="color: #a0aec0; display: block; margin-top: 5px;">
+                            Leave empty for open networks
+                        </small>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        Connect to Wi-Fi
+                    </button>
+                </form>
+
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Connecting to Wi-Fi network...</p>
+                    <p style="color: #a0aec0; margin-top: 10px; font-size: 14px;">
+                        The device will reboot after saving credentials
+                    </p>
+                </div>
+
+                <div class="tips">
+                    <h3>Connection Tips</h3>
+                    <ul>
+                        <li>Ensure you're within range of the Wi-Fi network</li>
+                        <li>Check that the network is operational (other devices can connect)</li>
+                        <li>For 5GHz networks, ensure compatibility (ESP32-C3 supports 2.4GHz only)</li>
+                        <li>The device will reboot automatically after saving credentials</li>
+                        <li>After connecting, access the device via its assigned IP address</li>
+                    </ul>
+                </div>
+
+                <div class="device-info">
+                    <div>
+                        <strong>Firmware:</strong> v1.0.0<br>
+                        <strong>Maintainer:</strong> zainalabidin@unimap.edu.my
+                    </div>
+                    <div>
+                        <div class="chip-id">ID: <span id="chipId">...</span></div>
+                        <div style="margin-top: 5px;">Water Level Node • SuperMini</div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    Need help? Visit <a href="https://github.com/zainalabidin85/" target="_blank">GitHub Repository</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('wifiForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const chipIdSpan = document.getElementById('chipId');
+
+            // Extract chip ID from AP SSID (if available) or generate random
+            function getChipId() {
+                // Try to extract from AP SSID (pH-Node-XXXX format)
+                const apSsid = '{{AP_SSID}}'; // This would need server-side replacement
+                const match = apSsid.match(/pH-Node-([A-F0-9]{4})$/);
+                if (match && match[1]) {
+                    return match[1];
+                }
+                // Fallback to random hex
+                return Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, '0');
+            }
+
+            chipIdSpan.textContent = getChipId();
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const ssid = document.getElementById('ssid').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (!ssid) {
+                    showError('Please enter a Wi-Fi network name (SSID)');
+                    return;
+                }
+
+                // Show loading state
+                submitBtn.disabled = true;
+                form.style.display = 'none';
+                loadingDiv.style.display = 'block';
+                hideMessages();
+
+                try {
+                    const formData = new FormData();
+                    formData.append('ssid', ssid);
+                    formData.append('pass', password);
+
+                    const response = await fetch('/api/settings/wifi', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        showSuccess('Wi-Fi credentials saved! Device is rebooting...');
+                        loadingDiv.innerHTML = `
+                            <div style="color: #38a169; font-size: 48px; margin: 20px 0;">✓</div>
+                            <p>Credentials saved successfully!</p>
+                            <p style="color: #4a5568; margin-top: 10px;">
+                                The pH Node is now rebooting and will attempt to connect to:<br>
+                                <strong>${ssid}</strong>
+                            </p>
+                            <p style="color: #a0aec0; margin-top: 20px; font-size: 14px;">
+                                This page will close automatically in 10 seconds...
+                            </p>
+                        `;
+                        
+                        // Redirect to device IP after delay (user should find it via router or mDNS)
+                        setTimeout(() => {
+                            window.location.href = 'http://phnode.local/';
+                        }, 10000);
+                    } else {
+                        const text = await response.text();
+                        throw new Error(`Server error: ${text}`);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showError(`Connection failed: ${error.message}. Please try again.`);
+                    
+                    // Reset form
+                    form.style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            });
+
+            function showError(message) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            }
+
+            function showSuccess(message) {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            }
+
+            function hideMessages() {
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+            }
+
+            // Auto-focus on SSID field
+            document.getElementById('ssid').focus();
+
+            // Optional: Show saved networks (would need additional endpoint)
+            async function loadSavedNetworks() {
+                // This could be extended to show previously saved networks
+                // from a separate endpoint if implemented
+            }
+
+            loadSavedNetworks();
+        });
+    </script>
+</body>
+</html>
