@@ -1070,7 +1070,7 @@ static void uiRenderInfo() {
   lcdSetLine(0, "== INFO ============");
   lcdSetLine(1, "FW:" + String(FW_VERSION));
   lcdSetLine(2, "Name:" + deviceName());
-  lcdSetLine(3, "Cal:" + (cal.valid ? "OK" : "NONE"));
+  lcdSetLine(3, String("Cal:") + (cal.valid ? "OK" : "NONE"));
 }
 
 static void uiRenderCalWizard() {
