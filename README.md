@@ -1,3 +1,4 @@
+![introductory project](/images/unnamed.png)
 # WaterLevel-Node (ESP32-C3 SuperMini)
 
 A compact **water-level monitor** firmware for **ESP32‑C3 SuperMini** with:
